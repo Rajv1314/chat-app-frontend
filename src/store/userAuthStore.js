@@ -3,7 +3,6 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-const token = localStorage.getItem("token");
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
@@ -12,24 +11,25 @@ export const useAuthStore = create((set, get) => ({
   isCheckingAuth: true,
   onlineUsers: [],
   socket: null,
-  
+
   checkAuth: async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      set({ isCheckingAuth: false });
+      return;
+    }
     try {
-      const response = await axiosInstance.get("/auth/getuserinfo", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get("/auth/getuserinfo");
       set({ authUser: response.data });
       get().connectedSocket();
     } catch (error) {
-      console.log("error in auth strore", error);
-      // set({ authUser: null });
+      console.log("❌ checkAuth failed", error?.response?.data);
+      set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
     }
   },
-
+  
   signupApi: async (data) => {
     try {
       set({ isSigningUp: true });
@@ -53,10 +53,10 @@ export const useAuthStore = create((set, get) => ({
   loginApi: async (data) => {
     try {
       set({ isLoggingIn: true });
-      let response = await axiosInstance.post("/auth/login", data);
-      if (response.status == 200) {
-        set({ authUser: response.data.data });
+      const response = await axiosInstance.post("/auth/login", data);
+      if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
+        set({ authUser: response.data.data });
         toast.success(response.data.message);
         get().connectedSocket();
       }
@@ -70,18 +70,14 @@ export const useAuthStore = create((set, get) => ({
   logout: async () => {
     localStorage.removeItem("token");
     set({ authUser: null });
-
     get().disconnectedSocket();
   },
 
   updateProfile: async (data) => {
     try {
       set({ isUpdatingProfile: true });
-      const response = await axiosInstance.put("/auth/update-profile", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      const response = await axiosInstance.put("/auth/update-profile", data);
       if (response.status === 200) {
         set({ authUser: response.data.data });
         toast.success(response.data.message);
@@ -107,6 +103,7 @@ export const useAuthStore = create((set, get) => ({
       set({ onlineUsers: userIds });
     });
   },
+
   disconnectedSocket: () => {
     if (get().socket?.connect) get().socket.disconnect();
   },

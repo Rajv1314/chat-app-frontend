@@ -23,7 +23,8 @@ export const useAuthStore = create((set, get) => ({
       set({ authUser: response.data });
       get().connectedSocket();
     } catch (error) {
-      set({ authUser: null });
+      console.log("error in auth strore", error);
+      // set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
     }
@@ -54,8 +55,8 @@ export const useAuthStore = create((set, get) => ({
       set({ isLoggingIn: true });
       let response = await axiosInstance.post("/auth/login", data);
       if (response.status == 200) {
+        set({ authUser: response.data.data });
         localStorage.setItem("token", response.data.token);
-        get().checkAuth();
         toast.success(response.data.message);
         get().connectedSocket();
       }

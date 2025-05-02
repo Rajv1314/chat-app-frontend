@@ -16,9 +16,7 @@ export default function App() {
   const {theme} =useThemeStrore();
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
-  console.log(onlineUsers);
-  
+  }, []);
   if (isCheckingAuth && !authUser) {
     return (
       <div className="flex  justify-center  items-center h-screen">

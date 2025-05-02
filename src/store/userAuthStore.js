@@ -2,7 +2,8 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/APi";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const token = localStorage.getItem("token");
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
@@ -11,13 +12,17 @@ export const useAuthStore = create((set, get) => ({
   isCheckingAuth: true,
   onlineUsers: [],
   socket: null,
+  
   checkAuth: async () => {
     try {
-      const response = await axiosInstance.get("/auth/getuserinfo");
+      const response = await axiosInstance.get("/auth/getuserinfo", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       set({ authUser: response.data });
       get().connectedSocket();
     } catch (error) {
-      console.log("error in auth strore", error);
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -49,7 +54,8 @@ export const useAuthStore = create((set, get) => ({
       set({ isLoggingIn: true });
       let response = await axiosInstance.post("/auth/login", data);
       if (response.status == 200) {
-        set({ authUser: response.data.data });
+        localStorage.setItem("token", response.data.token);
+        get().checkAuth();
         toast.success(response.data.message);
         get().connectedSocket();
       }
@@ -61,20 +67,20 @@ export const useAuthStore = create((set, get) => ({
   },
 
   logout: async () => {
-    try {
-      const response = await axiosInstance.post("/auth/logout");
-      set({ authUser: null });
-      toast.success(response.data.message);
-      get().disconnectedSocket();
-    } catch (error) {
-      toast.error(error?.response?.data?.error);
-    }
+    localStorage.removeItem("token");
+    set({ authUser: null });
+
+    get().disconnectedSocket();
   },
 
   updateProfile: async (data) => {
     try {
       set({ isUpdatingProfile: true });
-      const response = await axiosInstance.put("/auth/update-profile", data);
+      const response = await axiosInstance.put("/auth/update-profile", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (response.status === 200) {
         set({ authUser: response.data.data });
         toast.success(response.data.message);

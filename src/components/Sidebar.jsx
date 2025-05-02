@@ -15,13 +15,13 @@ export default function Sidebar() {
 const filterUsers = showOnlineOnly ? users.filter(user=> onlineUsers.includes(user._id)):users;
   if (isUsersLoading) return <SidebarSkeleton />;
   return (
-    <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
+    <aside className={`h-full w-[300px] max-[500px]:!w-full border-r border-base-300 flex-col transition-all duration-200 ${selectedUser? "hidden sm:flex": "!flex"}`}>
       <div className="border-b border-base-300 w-full p-5">
-        <div className="flex items-center gap-2">
+        <div className="flex  gap-2">
           <User className="size-6" />
-          <span className="font-medium hidden lg:block">Contacts </span>
+          <span className="font-medium block">Contacts </span>
         </div>
-        <div className="mt-3 hidden lg:flex items-center gap-2">
+        <div className="mt-3 flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
               type="checkbox"
@@ -50,7 +50,7 @@ const filterUsers = showOnlineOnly ? users.filter(user=> onlineUsers.includes(us
               }
             `}
           >
-            <div className="relative mx-auto lg:mx-0">
+            <div className="relative mx-0">
               <img
                 src={user.profilePic || "/avatar.png"}
                 alt={user.name}
@@ -65,7 +65,7 @@ const filterUsers = showOnlineOnly ? users.filter(user=> onlineUsers.includes(us
             </div>
 
             {/* User info - only visible on larger screens */}
-            <div className="hidden lg:block text-left min-w-0">
+            <div className="text-left min-w-0">
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
@@ -77,6 +77,7 @@ const filterUsers = showOnlineOnly ? users.filter(user=> onlineUsers.includes(us
           filterUsers.length===0 && <div className="text-center text-zinc-500 py-5">No online User </div>
         }
       </div>
+
     </aside>
   );
 }

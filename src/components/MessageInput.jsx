@@ -30,6 +30,7 @@ export default function MessageInput() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   const handleSendMessage = async (e) => {
+  
     e.preventDefault();
     if (!text.trim() && !previewImage) return;
     try {
@@ -37,8 +38,6 @@ export default function MessageInput() {
         text: text.trim(),
         image: previewImage,
       });
-
-      // Clear form
       setText("");
       setPrviewImage(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -71,7 +70,7 @@ export default function MessageInput() {
         <div className="flex-1 flex gap-2">
           <input
             type="text"
-            className="w-full input input-bordered rounded-lg input-sm sm:input-md"
+            className="w-full input input-bordered rounded-lg input-sm sm:input-md outline-0"
             placeholder="Type a message ...."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -85,7 +84,7 @@ export default function MessageInput() {
           />
           <button
             type="button"
-            className={`hidden sm:flex btn btn-circle
+            className={`flex btn btn-circle
                      ${previewImage ? "text-emerald-500" : "text-zinc-400"}`}
             onClick={() => fileInputRef.current?.click()}
           >

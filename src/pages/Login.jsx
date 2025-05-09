@@ -13,13 +13,12 @@ export default function Login() {
     })
     const { loginApi,  isLoggingIn } = useAuthStore();
     const handleSubmit = async (e) => {
-
       e.preventDefault();
       loginApi(formData)
     }
     
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-screen grid md:grid-cols-2">
     {/* Left Side - Form */}
     <div className="flex flex-col justify-center items-center p-6 sm:p-12">
       <div className="w-full max-w-md space-y-8">
@@ -49,7 +48,7 @@ export default function Login() {
               </div>
               <input
                 type="email"
-                className={`input input-bordered w-full pl-10`}
+                className={` input input-border rounded-xl w-full pl-10   border-2 focus:border-blue-400 focus:outline-none focus:ring-0`}
                 placeholder="you@example.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -67,7 +66,7 @@ export default function Login() {
               </div>
               <input
                 type={showPassword ? "text" : "password"}
-                className={`input input-bordered w-full pl-10`}
+                className={` input input-border rounded-xl w-full pl-10   border-2 focus:border-blue-400 focus:outline-none focus:ring-0`}
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}

@@ -39,6 +39,7 @@ export const useAuthStore = create((set, get) => ({
         password: data.password,
       });
       if (response.status == 201) {
+        localStorage.setItem("token", response.data.token);
         set({ authUser: response.data.data });
         toast.success(response.data.message);
         get().connectedSocket();

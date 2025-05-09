@@ -29,7 +29,7 @@ if (success===true) {
 }
   };
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="min-h-screen grid md:grid-cols-2">
       {/* left Side */}
       <div className="flex justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
@@ -55,7 +55,7 @@ if (success===true) {
                 </div>
                 <input
                   type="text"
-                  className={`input input-border w-full pl-10`}
+                  className={` input input-border rounded-xl w-full pl-10   border-2 focus:border-blue-400 focus:outline-none focus:ring-0`}
                   placeholder="enter Full Name  "
                   value={formData.fullName}
                   onChange={(e) =>
@@ -74,7 +74,7 @@ if (success===true) {
                 </div>
                 <input
                   type="email"
-                  className={`input input-border w-full pl-10`}
+                  className={` input input-border rounded-xl w-full pl-10  border-2 focus:border-blue-400 focus:outline-none focus:ring-0`}
                   placeholder="xyz123@gmail.com..... "
                   value={formData.email}
                   onChange={(e) =>
@@ -93,7 +93,7 @@ if (success===true) {
                 </div>
                 <input
                   type={showPassword?"text":"password"}
-                  className={`input input-border w-full pl-10`}
+                  className={` input input-border rounded-xl w-full pl-10  border-2 focus:border-blue-400 focus:outline-none focus:ring-0`}
                   placeholder="enter password  "
                   value={formData.password}
                   onChange={(e) =>

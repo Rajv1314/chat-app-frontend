@@ -7,6 +7,7 @@ export default function MessageInput() {
   const [text, setText] = useState("");
   const [previewImage, setPrviewImage] = useState(null);
   const fileInputRef = useRef(null);
+  const [isSending, setIsSending] = useState(false)
   const { sendMessage } = useChatStore();
   const handleImageSelect = async (e) => {
     const file = e.target.files[0];
@@ -30,16 +31,18 @@ export default function MessageInput() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
   const handleSendMessage = async (e) => {
-  
+
     e.preventDefault();
     if (!text.trim() && !previewImage) return;
     try {
+      setIsSending(true)
       await sendMessage({
         text: text.trim(),
         image: previewImage,
       });
       setText("");
       setPrviewImage(null);
+      setIsSending(false)
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -91,10 +94,10 @@ export default function MessageInput() {
             <Image size={20} />
           </button>
         </div>
-        <button
+         <button
           type="submit"
           className="btn btn-sm btn-circle"
-          disabled={!text.trim() && !previewImage}
+          disabled={isSending || !text.trim() && !previewImage}
         >
           <Send size={22} />
         </button>
